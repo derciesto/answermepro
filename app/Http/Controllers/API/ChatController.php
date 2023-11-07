@@ -29,6 +29,8 @@ class ChatController extends Controller
         $userId = $user->id;
         foreach ($chats as $chat) {
             $profile_picture = asset("images/default-avatar-profile.jpg");
+            $thumbImage = asset("images/default-avatar-profile.jpg");
+
             $newMessage = 0;
             $historyData = $chat->history;
             $totalElements = count($historyData);
@@ -45,12 +47,13 @@ class ChatController extends Controller
                     $usernName  = $userData->name;
                     if ($userData->profile_picture != "") {
                         $profile_picture = asset("uploads/profile_pictures/" . $userData->profile_picture);
+                        $thumbImage = asset("uploads/profile_pictures/thumb_" . $userData->profile_picture);
                     }
                     $toUserData = ContactUser::where('contact_number', 'like', "%{$userData->mobile_number}%")->where("user_id", $userId)->first();
                     if ($toUserData) {
                         $usernName  = $toUserData->name;
                     }
-                    $user = ['id' => $chat->to_id, "name" => $usernName, "profile_picture" => $profile_picture];
+                    $user = ['id' => $chat->to_id, "name" => $usernName, "profile_picture" => $profile_picture,'thumb'=> $thumbImage];
                 }
             } else {
                 $newMessage = $chat->to_count;
@@ -59,12 +62,13 @@ class ChatController extends Controller
                     $usernName  = $userData->name;
                     if ($userData->profile_picture != "") {
                         $profile_picture = asset("uploads/profile_pictures/" . $userData->profile_picture);
+                        $thumbImage = asset("uploads/profile_pictures/thumb_" . $userData->profile_picture);
                     }
                     $toUserData = ContactUser::where('contact_number', 'like', "%{$userData->mobile_number}%")->where("user_id", $userId)->first();
                     if ($toUserData) {
                         $usernName  = $toUserData->name;
                     }
-                    $user = ['id' => $chat->from_id, "name" => $usernName, "profile_picture" => $profile_picture];
+                    $user = ['id' => $chat->from_id, "name" => $usernName, "profile_picture" =>$profile_picture, 'thumb' => $thumbImage];
                 }
             }
             $messageTime = Carbon::createFromTimeStamp($messageDetails['times'])->diffForHumans();

@@ -1,7 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
+use Intervention\Image\Facades\Image;
+use Illuminate\Support\Facades\Artisan;
 
 /*
 |--------------------------------------------------------------------------
@@ -23,6 +24,8 @@ Route::get('tools/clear-cache', function () {
 });
 
 Route::get('/', function () {
+   
+ 
     return "Welcome at Answer Me Pro";
     //return view('welcome');
 });

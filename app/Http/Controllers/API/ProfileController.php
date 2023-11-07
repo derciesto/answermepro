@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
+use Intervention\Image\Facades\Image;
 use Symfony\Component\HttpFoundation\Response;
 
 
@@ -18,10 +19,12 @@ class ProfileController extends Controller
     {
         $user = auth()->user();
         $profilePicture = asset("images/default-avatar-profile.jpg");
+        $thumbImage = asset("images/default-avatar-profile.jpg");
         if ($user->profile_picture != "") {
             $profilePicture = asset("uploads/profile_pictures/" . $user->profile_picture);
+            $thumbImage = asset("uploads/profile_pictures/thumb_" . $user->profile_picture);
         }
-        $sendData = ['id' => $user->id, 'name' => $user->name, 'about' => $user->about, 'country_code' => $user->country_code, 'mobile_number' => $user->mobile_number, "profile_picture" => $profilePicture];
+        $sendData = ['id' => $user->id, 'name' => $user->name, 'about' => $user->about, 'country_code' => $user->country_code, 'mobile_number' => $user->mobile_number, "profile_picture" => $profilePicture, 'thumb' => $thumbImage];
         return response()->json(['message' => "", 'status' => 1, 'data' => (object)$sendData]);
     }
 
@@ -42,6 +45,11 @@ class ProfileController extends Controller
             $imageName = Str::random(20) . '.png';
             File::put(public_path("uploads/profile_pictures") . '/' . $imageName, base64_decode($image));
             $updateData['profile_picture'] = $imageName;
+
+            $img = Image::make("uploads/profile_pictures/$imageName");
+            $img->resize(100, null, function ($constraint) {
+                $constraint->aspectRatio();
+            })->save("uploads/profile_pictures/thumb_$imageName");
         } else {
             $updateData = ['name' => $input['name'], 'about' => $input['about']];
         }
@@ -64,7 +72,7 @@ class ProfileController extends Controller
     }
     function logout(Request $request)
     {
-        DeviceToken::where([['device_id', $request->device_id],[ 'user_id' , Auth::id()]])->delete();
+        DeviceToken::where([['device_id', $request->device_id], ['user_id', Auth::id()]])->delete();
         return response()->json(['message' => "", 'status' => 1, 'data' => []]);
     }
 }
