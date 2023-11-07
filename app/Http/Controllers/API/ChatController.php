@@ -228,6 +228,8 @@ class ChatController extends Controller
         $chatId = 0;
         $messageData = $userDetails = [];
         $profile_picture = asset("images/default-avatar-profile.jpg");
+        $thumbImage = asset("images/default-avatar-profile.jpg");
+
         $getChat = Chat::whereRaw("(from_id='" . $user->id . "' OR to_id='" . $user->id . "') AND (from_id='" . $input['user_id'] . "' OR to_id='" . $input['user_id'] . "')")->first();
 
         if ($getChat) {
@@ -278,12 +280,13 @@ class ChatController extends Controller
             $userName = $userData->name;
             if ($userData->profile_picture != "") {
                 $profile_picture = asset("uploads/profile_pictures/" . $userData->profile_picture);
+                $thumbImage = asset("uploads/profile_pictures/thumb" . $userData->profile_picture);
             }
             $toUserData = ContactUser::where('contact_number', 'like', "%{$userData->mobile_number}%")->where("user_id", $user->id)->first();
             if ($toUserData) {
                 $userName  = $toUserData->name;
             }
-            $userDetails = ['id' => $input['user_id'], "name" => $userName, "profile_picture" => $profile_picture,'phone'=>$userData->mobile_number,'about'=>$userData->about];
+            $userDetails = ['id' => $input['user_id'], "name" => $userName, "profile_picture" => $profile_picture,'phone'=>$userData->mobile_number,'about'=>$userData->about,'thumb'=> $thumbImage];
         }
         return response()->json(['message' => "", 'status' => 1, 'chat_id' => $chatId, 'user' => $userDetails, "data" => $messageData]);
     }
