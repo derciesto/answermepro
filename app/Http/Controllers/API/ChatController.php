@@ -280,7 +280,7 @@ class ChatController extends Controller
             $userName = $userData->name;
             if ($userData->profile_picture != "") {
                 $profile_picture = asset("uploads/profile_pictures/" . $userData->profile_picture);
-                $thumbImage = asset("uploads/profile_pictures/thumb" . $userData->profile_picture);
+                $thumbImage = asset("uploads/profile_pictures/thumb_" . $userData->profile_picture);
             }
             $toUserData = ContactUser::where('contact_number', 'like', "%{$userData->mobile_number}%")->where("user_id", $user->id)->first();
             if ($toUserData) {
