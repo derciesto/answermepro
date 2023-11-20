@@ -9,10 +9,16 @@ use Symfony\Component\HttpFoundation\Response;
 
 class TemplateController extends Controller
 {
-    function index()
+    function index(Request $request)
     {
         $user = auth()->user();
-        $getTemplate = Template::where("user_id", $user->id)->get(['id', 'title', 'message']);
+        if ($request->from === 'automation') {
+
+            $getTemplate = Template::where([["user_id", $user->id],['enabled',1]])->get(['id', 'title', 'message', 'enabled']);
+        } else {
+
+            $getTemplate = Template::where("user_id", $user->id)->get(['id', 'title', 'message', 'enabled']);
+        }
         return response()->json(['message' => '', 'status' => 1, 'data' => $getTemplate]);
     }
 
