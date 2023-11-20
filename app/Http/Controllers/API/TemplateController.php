@@ -50,6 +50,7 @@ class TemplateController extends Controller
     {
         $input = $request->validate([
             'id' => 'required',
+            'enabled'=>'required'
 
         ]);
         $template = Template::findOrFail($input['id']);
@@ -57,7 +58,7 @@ class TemplateController extends Controller
         $template->update([
             'enabled' => $request->enabled ? 1 : 0
         ]);
-        return response()->json(['message' => 'Your template has been updated successfully.', 'status' => 1, 'data' => ['id' => $template->id]]);
+        return response()->json(['message' => 'Your template has been status updated successfully.', 'status' => 1, 'data' => ['id' => $template->id]]);
     }
 
     function delete($id)
