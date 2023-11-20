@@ -22,15 +22,15 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-    Route::get('broadcast-checking', function (Request $request) {
+
+Route::get('broadcast-checking', function (Request $request) {
     Log::info("Call brodcard");
-     $salt = Str::random(8);
- 
-$pusher = new Pusher\Pusher('99469ebcdb6697604a31', '349731c82ad6da33518b', '516105', ['cluster' => 'ap2']);
-$info = $pusher->getChannelInfo('private-chat.10', ['info' => 'user_count']);
-dd($info);
-$user_count = $info->user_count;
-    
+    $salt = Str::random(8);
+
+    $pusher = new Pusher\Pusher('99469ebcdb6697604a31', '349731c82ad6da33518b', '516105', ['cluster' => 'ap2']);
+    $info = $pusher->getChannelInfo('private-chat.10', ['info' => 'user_count']);
+    dd($info);
+    $user_count = $info->user_count;
 });
 
 
@@ -42,15 +42,14 @@ Route::group(['prefix' => 'auth', 'as' => 'auth.'], function () {
 
 Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('broadcast-auth', function (Request $request) {
-    Log::info("Call brodcard");
-     $salt = Str::random(8);
- 
-$pusher = new Pusher\Pusher('99469ebcdb6697604a31', '349731c82ad6da33518b', '516105', ['cluster' => 'ap2']);
-$auth = json_decode( $pusher->authorizeChannel($request->channel_name,$request->socket_id),true);
- 
-     return response()->json([ "auth"=> $auth['auth'], "user_data"=> "der" ]);
-    
-});
+        Log::info("Call brodcard");
+        $salt = Str::random(8);
+
+        $pusher = new Pusher\Pusher('99469ebcdb6697604a31', '349731c82ad6da33518b', '516105', ['cluster' => 'ap2']);
+        $auth = json_decode($pusher->authorizeChannel($request->channel_name, $request->socket_id), true);
+
+        return response()->json(["auth" => $auth['auth'], "user_data" => "der"]);
+    });
     Route::group(['prefix' => 'profile', 'as' => 'profile.'], function () {
         Route::get('edit', [ProfileController::class, 'edit']);
         Route::post('update', [ProfileController::class, 'update']);
@@ -62,6 +61,7 @@ $auth = json_decode( $pusher->authorizeChannel($request->channel_name,$request->
         Route::get('/index', [TemplateController::class, 'index']);
         Route::post('/create', [TemplateController::class, 'create']);
         Route::post('/update', [TemplateController::class, 'update']);
+        Route::post('/update-status', [TemplateController::class, 'updateStatus']);
         Route::delete('/delete/{id}', [TemplateController::class, 'delete']);
     });
 
